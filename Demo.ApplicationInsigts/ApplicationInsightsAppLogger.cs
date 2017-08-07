@@ -10,7 +10,7 @@ namespace Demo.ApplicationInsigts
     public class ApplicationInsightsAppLogger : IAppLogger
     {
         static ApplicationInsightsAppLogger instance;
-        private TelemetryClient _telemetry;
+        private readonly TelemetryClient _telemetry;
         public TelemetryClient AppLogger
         {
             get { return _telemetry; }
@@ -21,52 +21,50 @@ namespace Demo.ApplicationInsigts
                 instance = new ApplicationInsightsAppLogger();
             return instance;
         }
+
         private ApplicationInsightsAppLogger()
         {
             _telemetry = new TelemetryClient();
         }
 
-        public void TrackEvent(string eventName, LogLevel level, string category, dynamic properties, string authenticatedUserId = null)
+        public void Flush()
         {
-            var eventToSave = new EventTelemetry();
-            eventToSave.Name = eventName;
-            eventToSave.Properties["Level"] = level.ToString();
-            eventToSave.Properties["Category"] = category;
-            if (properties != null)
+            if (_telemetry != null)
             {
-                var props = properties.GetType().GetProperties();
-                foreach (PropertyInfo p in props)
-                {
-                    eventToSave.Properties[p.Name] = p.GetValue(properties, null).ToString();
-                }
+                _telemetry.Flush();
             }
-            if (!string.IsNullOrEmpty(authenticatedUserId))
-            {
-                eventToSave.Context.User.AuthenticatedUserId = authenticatedUserId;
-            }
-            _telemetry.TrackEvent(eventToSave);
         }
-        public string TrackException(Exception ex, dynamic properties, string authenticatedUserId = null)
+
+        public void LogDebug(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            var exceptionToSave = new ExceptionTelemetry();
-            exceptionToSave.Exception = ex;
-            string errorId = Guid.NewGuid().ToString();
-            exceptionToSave.Properties["ErrorId"] = errorId;
-            exceptionToSave.Properties["ErrorMessage"] = ex.Message;
-            if (properties != null)
-            {
-                var props = properties.GetType().GetProperties();
-                foreach (PropertyInfo p in props)
-                {
-                    exceptionToSave.Properties[p.Name] = p.GetValue(properties, null).ToString();
-                }
-            }
-            if (!string.IsNullOrEmpty(authenticatedUserId))
-            {
-                exceptionToSave.Context.User.AuthenticatedUserId = authenticatedUserId;
-            }
-            _telemetry.TrackException(exceptionToSave);
-            return errorId;
+            TrackEvent("DEBUG", eventName, category, properties, authenticatedUserId);
+        }
+
+        public void LogInfo(string eventName, string category, dynamic properties, string authenticatedUserId)
+        {
+            TrackEvent("INFO", eventName, category, properties, authenticatedUserId);
+        }
+
+        public void LogWarn(string eventName, string category, dynamic properties, string authenticatedUserId)
+        {
+            TrackEvent("WARN", eventName, category, properties, authenticatedUserId);
+
+        }
+
+        public string LogExecption(Exception ex, string category, dynamic properties, string authenticatedUserId)
+        {
+            return TrackException(ex, category, properties, authenticatedUserId);
+        }
+
+        public void LogError(string eventName, string category, dynamic properties, string authenticatedUserId)
+        {
+            TrackEvent("ERROR", eventName, category, properties, authenticatedUserId);
+
+        }
+
+        public void LogFatal(string eventName, string category, dynamic properties, string authenticatedUserId)
+        {
+            throw new NotImplementedException();
         }
 
         public void TrackMetric(string eventName, LogLevel level, string category, dynamic properties, string authenticatedUserId)
@@ -86,6 +84,7 @@ namespace Demo.ApplicationInsigts
             }
             _telemetry.TrackMetric(metricInfo);
         }
+
         public void TrackRequest(string eventName, DateTimeOffset startTime, TimeSpan duration, bool sucess, dynamic properties, string requestID)
         {
             var context = new RequestTelemetry();
@@ -116,12 +115,53 @@ namespace Demo.ApplicationInsigts
             return new AppInsightsTimer(this, userValue, properties, timerID);
         }
 
-        public void Flush()
+        private void TrackEvent(string level, string eventName, string category, dynamic properties, string authenticatedUserId = null)
         {
-            if (_telemetry != null)
+            var eventToSave = new EventTelemetry();
+            eventToSave.Name = eventName;
+            eventToSave.Properties["Level"] = level;
+            eventToSave.Properties["Category"] = category;
+            if (properties != null)
             {
-                _telemetry.Flush();
+                var props = properties.GetType().GetProperties();
+                foreach (PropertyInfo p in props)
+                {
+                    eventToSave.Properties[p.Name] = p.GetValue(properties, null).ToString();
+                }
             }
+            if (!string.IsNullOrEmpty(authenticatedUserId))
+            {
+                eventToSave.Context.User.AuthenticatedUserId = authenticatedUserId;
+            }
+            _telemetry.TrackEvent(eventToSave);
         }
+
+        private string TrackException(Exception ex, string requestID, dynamic properties, string authenticatedUserId = null)
+        {
+            var exceptionToSave = new ExceptionTelemetry();
+            exceptionToSave.Exception = ex;
+            string errorId = Guid.NewGuid().ToString();
+            if (!string.IsNullOrWhiteSpace(requestID))
+            {
+                exceptionToSave.ProblemId = requestID;
+            }
+            exceptionToSave.Properties["ErrorId"] = errorId;
+            exceptionToSave.Properties["ErrorMessage"] = ex.Message;
+            if (properties != null)
+            {
+                var props = properties.GetType().GetProperties();
+                foreach (PropertyInfo p in props)
+                {
+                    exceptionToSave.Properties[p.Name] = p.GetValue(properties, null).ToString();
+                }
+            }
+            if (!string.IsNullOrEmpty(authenticatedUserId))
+            {
+                exceptionToSave.Context.User.AuthenticatedUserId = authenticatedUserId;
+            }
+            _telemetry.TrackException(exceptionToSave);
+            return errorId;
+        }
+
     }
 }
