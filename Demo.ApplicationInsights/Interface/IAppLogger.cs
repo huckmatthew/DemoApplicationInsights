@@ -1,9 +1,7 @@
-﻿using Microsoft.ApplicationInsights;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Microsoft.ApplicationInsights;
 
-namespace Demo.ApplicationInsigts.Interface
+namespace Demo.ApplicationInsights.Interface
 {
     public interface IAppLogger
     {
@@ -16,7 +14,7 @@ namespace Demo.ApplicationInsigts.Interface
         string LogExecption(Exception ex, string category, dynamic properties, string authenticatedUserId);
         void LogError(string eventName, string category, dynamic properties, string authenticatedUserId);
         void LogFatal(string eventName, string category, dynamic properties, string authenticatedUserId);
-        void TrackMetric(string eventName, LogLevel level, string category, dynamic properties, string authenticatedUserId);
+        void TrackMetric(string eventName, string category, dynamic properties, string authenticatedUserId);
         void TrackRequest(string eventName, DateTimeOffset startTime, TimeSpan duration, bool sucess, dynamic properties, string requestId);
         AppInsightsTimer TrackTimer(string userValue, dynamic properties, string timerId);
         AppInsightsTimer TrackTimer(string userValue);

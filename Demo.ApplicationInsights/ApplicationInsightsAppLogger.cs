@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Dynamic;
 using System.Reflection;
-using Demo.ApplicationInsigts.Interface;
+using Demo.ApplicationInsights.Configure;
+using Demo.ApplicationInsights.Interface;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 
-namespace Demo.ApplicationInsigts
+namespace Demo.ApplicationInsights
 {
     public class ApplicationInsightsAppLogger : IAppLogger
     {
@@ -37,18 +37,29 @@ namespace Demo.ApplicationInsigts
 
         public void LogDebug(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            TrackEvent("DEBUG", eventName, category, properties, authenticatedUserId);
+            if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
+                ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Debug)
+            {
+                TrackEvent("DEBUG", eventName, category, properties, authenticatedUserId);
+            }
         }
 
         public void LogInfo(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            TrackEvent("INFO", eventName, category, properties, authenticatedUserId);
+            if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
+                ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Information)
+            {
+                TrackEvent("INFO", eventName, category, properties, authenticatedUserId);
+            }
         }
 
         public void LogWarn(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            TrackEvent("WARN", eventName, category, properties, authenticatedUserId);
-
+            if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
+                ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Warning)
+            {
+                TrackEvent("WARN", eventName, category, properties, authenticatedUserId);
+            }
         }
 
         public string LogExecption(Exception ex, string category, dynamic properties, string authenticatedUserId)
@@ -58,21 +69,27 @@ namespace Demo.ApplicationInsigts
 
         public void LogError(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            TrackEvent("ERROR", eventName, category, properties, authenticatedUserId);
-
+            if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
+                ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Error)
+            {
+                TrackEvent("ERROR", eventName, category, properties, authenticatedUserId);
+            }
         }
 
         public void LogFatal(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            throw new NotImplementedException();
+            if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
+                ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Critical)
+            {
+                TrackEvent("Fatal", eventName, category, properties, authenticatedUserId);
+            }
         }
 
-        public void TrackMetric(string eventName, LogLevel level, string category, dynamic properties, string authenticatedUserId)
+        public void TrackMetric(string eventName, string category, dynamic properties, string authenticatedUserId)
         {
-            var matt = new TelemetryContext();
+            
             var metricInfo = new MetricTelemetry();
             metricInfo.Name = eventName;
-            metricInfo.Properties["Level"] = level.ToString();
             metricInfo.Properties["Category"] = category;
             if (properties != null)
             {
@@ -138,8 +155,7 @@ namespace Demo.ApplicationInsigts
 
         private string TrackException(Exception ex, string requestID, dynamic properties, string authenticatedUserId = null)
         {
-            var exceptionToSave = new ExceptionTelemetry();
-            exceptionToSave.Exception = ex;
+            var exceptionToSave = new ExceptionTelemetry {Exception = ex};
             string errorId = Guid.NewGuid().ToString();
             if (!string.IsNullOrWhiteSpace(requestID))
             {

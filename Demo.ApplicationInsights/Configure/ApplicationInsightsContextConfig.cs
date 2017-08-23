@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Demo.ApplicationInsigts.Interface;
+﻿using Demo.ApplicationInsights.Interface;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 
-namespace Demo.ApplicationInsigts.Configure
+namespace Demo.ApplicationInsights.Configure
 {
     public class ApplicationInsightsContextConfig : Microsoft.ApplicationInsights.Extensibility.ITelemetryInitializer
     {

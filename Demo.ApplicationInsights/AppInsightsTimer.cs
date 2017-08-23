@@ -1,12 +1,12 @@
-﻿using Demo.ApplicationInsigts.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Dynamic;
+using Demo.ApplicationInsights.Interface;
 using Microsoft.CSharp;
 
-namespace Demo.ApplicationInsigts
+namespace Demo.ApplicationInsights
 {
     public class AppInsightsTimer : IDisposable
     {

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>Demo.ApplicationInsights</AssemblyName>
+    <RootNamespace>Demo.ApplicationInsights</RootNamespace>
+      <PackageId>Demo.ApplicationInsights.WexHealth</PackageId>
+      <PackageVersion>1.0.0</PackageVersion>
+      <Authors>WexHealth</Authors>
+      <Description>HDC Demo Application Insights .net standard utility</Description>
+      <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+      <PackageReleaseNotes>First release</PackageReleaseNotes>
+      <Copyright>Copyright 2017 (c) WexHealth Corporation. All rights reserved.</Copyright>
+      <PackageTags>logger logging logs Azure ApplicationInisghts</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>default</LangVersion>
+    <DocumentationFile>bin\Debug\netstandard1.6\Demo.ApplicationInsights.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.6\Demo.ApplicationInsights.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Demo.ApplicationInsights.nuspec" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.4.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
