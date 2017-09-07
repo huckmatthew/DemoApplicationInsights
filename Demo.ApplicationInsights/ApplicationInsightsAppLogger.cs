@@ -15,6 +15,7 @@ namespace Demo.ApplicationInsights
         {
             get { return _telemetry; }
         }
+
         public static ApplicationInsightsAppLogger GetLogger()
         {
             if (instance == null)
@@ -40,7 +41,7 @@ namespace Demo.ApplicationInsights
             if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
                 ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Debug)
             {
-                TrackEvent("DEBUG", eventName, category, properties, authenticatedUserId);
+                TrackEvent(LogLevel.Debug.ToString(), eventName, category, properties, authenticatedUserId);
             }
         }
 
@@ -49,7 +50,7 @@ namespace Demo.ApplicationInsights
             if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
                 ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Information)
             {
-                TrackEvent("INFO", eventName, category, properties, authenticatedUserId);
+                TrackEvent(LogLevel.Information.ToString(), eventName, category, properties, authenticatedUserId);
             }
         }
 
@@ -58,7 +59,7 @@ namespace Demo.ApplicationInsights
             if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
                 ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Warning)
             {
-                TrackEvent("WARN", eventName, category, properties, authenticatedUserId);
+                TrackEvent(LogLevel.Warning.ToString(), eventName, category, properties, authenticatedUserId);
             }
         }
 
@@ -72,7 +73,7 @@ namespace Demo.ApplicationInsights
             if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
                 ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Error)
             {
-                TrackEvent("ERROR", eventName, category, properties, authenticatedUserId);
+                TrackEvent(LogLevel.Error.ToString(), eventName, category, properties, authenticatedUserId);
             }
         }
 
@@ -81,7 +82,7 @@ namespace Demo.ApplicationInsights
             if (ConfigureApplicationInsights.ApplicationInsightsConfig.Enabled &&
                 ConfigureApplicationInsights.ApplicationInsightsConfig.LoggingLevel >= LogLevel.Critical)
             {
-                TrackEvent("Fatal", eventName, category, properties, authenticatedUserId);
+                TrackEvent(LogLevel.Critical.ToString(), eventName, category, properties, authenticatedUserId);
             }
         }
 
@@ -134,8 +135,7 @@ namespace Demo.ApplicationInsights
 
         private void TrackEvent(string level, string eventName, string category, dynamic properties, string authenticatedUserId = null)
         {
-            var eventToSave = new EventTelemetry();
-            eventToSave.Name = eventName;
+            var eventToSave = new EventTelemetry {Name = eventName};
             eventToSave.Properties["Level"] = level;
             eventToSave.Properties["Category"] = category;
             if (properties != null)
@@ -151,6 +151,7 @@ namespace Demo.ApplicationInsights
                 eventToSave.Context.User.AuthenticatedUserId = authenticatedUserId;
             }
             _telemetry.TrackEvent(eventToSave);
+
         }
 
         private string TrackException(Exception ex, string requestID, dynamic properties, string authenticatedUserId = null)

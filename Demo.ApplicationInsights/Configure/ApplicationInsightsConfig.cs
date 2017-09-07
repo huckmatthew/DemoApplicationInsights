@@ -1,5 +1,6 @@
 ﻿using Demo.ApplicationInsights.Interface;
 
+
 namespace Demo.ApplicationInsights.Configure
 {
     public class ApplicationInsightsConfig : IApplicaitonInsightsConfig

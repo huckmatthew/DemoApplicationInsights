@@ -1,4 +1,6 @@
-﻿namespace Demo.ApplicationInsights.Interface
+﻿
+
+namespace Demo.ApplicationInsights.Interface
 {
     public interface IApplicaitonInsightsConfig
     {

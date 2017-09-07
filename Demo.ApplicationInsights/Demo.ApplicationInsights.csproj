@@ -1,17 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Demo.ApplicationInsights</AssemblyName>
     <RootNamespace>Demo.ApplicationInsights</RootNamespace>
       <PackageId>Demo.ApplicationInsights.WexHealth</PackageId>
-      <PackageVersion>1.0.0</PackageVersion>
+      <PackageVersion>1.0.3</PackageVersion>
       <Authors>WexHealth</Authors>
       <Description>HDC Demo Application Insights .net standard utility</Description>
       <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
       <PackageReleaseNotes>First release</PackageReleaseNotes>
       <Copyright>Copyright 2017 (c) WexHealth Corporation. All rights reserved.</Copyright>
       <PackageTags>logger logging logs Azure ApplicationInisghts</PackageTags>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Version>1.0.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
